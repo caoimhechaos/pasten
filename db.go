@@ -123,6 +123,7 @@ func (conn *CassandraStore) AddPaste(paste *Paste, user string) (
 	col.Timestamp = ts
 
 	// TODO(caoimhe): Use a mutation pool and locking here!
+
 	ire, ue, te, err := conn.client.Insert([]byte(pasteid), &cp, &col,
 		cassandra.ConsistencyLevel_ONE)
 	if ire != nil {
@@ -254,149 +255,78 @@ func (conn *CassandraStore) AddPaste(paste *Paste, user string) (
  * Look up the paste with the short ID "shortid".
  */
 func (conn *CassandraStore) LookupPaste(shortid string) (
-	Paste, error) {
-	var paste Paste
-	var path *cassandra.ColumnPath
+	*Paste, error) {
+	var paste *Paste
+	var parent *cassandra.ColumnParent
+	var cols []*cassandra.ColumnOrSuperColumn
+	var predicate *cassandra.SlicePredicate
+	var ire *cassandra.InvalidRequestException
+	var ue *cassandra.UnavailableException
+	var te *cassandra.TimedOutException
+	var err error
 
-	path = cassandra.NewColumnPath()
-	path.ColumnFamily = conn.corpus
-	path.SuperColumn = nil
-	path.Column = []byte("data")
+	parent = cassandra.NewColumnParent()
+	parent.ColumnFamily = conn.corpus
+
+	predicate = cassandra.NewSlicePredicate()
+	predicate.ColumnNames = [][]byte{[]byte("data"), []byte("syntax"),
+		[]byte("title"), []byte("owner")}
 
 	// TODO(caoimhe): read the whole set of rows in one go.
-	col, ire, nfe, ue, te, err := conn.client.Get([]byte(shortid),
-		path, cassandra.ConsistencyLevel_ONE)
-	if col == nil {
-		if ire != nil {
-			log.Println("Invalid request: ", ire.Why)
-			num_errors.Add("invalid-request", 1)
-			return paste, errors.New(ire.Why)
-		}
-
-		if nfe != nil {
-			num_notfound.Add(1)
-			return paste, nil
-		}
-
-		if ue != nil {
-			log.Println("Unavailable")
-			num_errors.Add("unavailable", 1)
-			return paste, errors.New("Unavailable")
-		}
-
-		if te != nil {
-			log.Println("Request to database backend timed out")
-			num_errors.Add("timeout", 1)
-			return paste, errors.New("Timed out")
-		}
-
-		if err != nil {
-			log.Print("Error getting column: ", err.Error(), "\n")
-			num_errors.Add("os-error", 1)
-			return paste, err
-		}
-
-		return paste, nil
+	cols, ire, ue, te, err = conn.client.GetSlice([]byte(shortid), parent,
+		predicate, cassandra.ConsistencyLevel_ONE)
+	if ire != nil {
+		log.Println("Invalid request: ", ire.Why)
+		num_errors.Add("invalid-request", 1)
+		return nil, errors.New(ire.Why)
 	}
 
-	paste.Data = string(col.Column.Value)
-	paste.Time = time.Unix(col.Column.Timestamp, 0)
-	path.Column = []byte("syntax")
-
-	col, ire, nfe, ue, te, err = conn.client.Get([]byte(shortid),
-		path, cassandra.ConsistencyLevel_ONE)
-	if col == nil {
-		if ire != nil {
-			log.Println("Invalid request: ", ire.Why)
-			num_errors.Add("invalid-request", 1)
-			return paste, errors.New(ire.Why)
-		}
-
-		if ue != nil {
-			log.Println("Unavailable")
-			num_errors.Add("unavailable", 1)
-			return paste, errors.New("Unavailable")
-		}
-
-		if te != nil {
-			log.Println("Request to database backend timed out")
-			num_errors.Add("timeout", 1)
-			return paste, errors.New("Timed out")
-		}
-
-		if err != nil {
-			log.Print("Error getting column: ", err.Error(), "\n")
-			num_errors.Add("os-error", 1)
-			return paste, err
-		}
-	} else {
-		paste.Syntax = string(col.Column.Value)
+	if ue != nil {
+		log.Println("Unavailable")
+		num_errors.Add("unavailable", 1)
+		return nil, errors.New("Unavailable")
 	}
 
-	path.Column = []byte("title")
-
-	col, ire, nfe, ue, te, err = conn.client.Get([]byte(shortid),
-		path, cassandra.ConsistencyLevel_ONE)
-	if col == nil {
-		if ire != nil {
-			log.Println("Invalid request: ", ire.Why)
-			num_errors.Add("invalid-request", 1)
-			return paste, errors.New(ire.Why)
-		}
-
-		if ue != nil {
-			log.Println("Unavailable")
-			num_errors.Add("unavailable", 1)
-			return paste, errors.New("Unavailable")
-		}
-
-		if te != nil {
-			log.Println("Request to database backend timed out")
-			num_errors.Add("timeout", 1)
-			return paste, errors.New("Timed out")
-		}
-
-		if err != nil {
-			log.Print("Error getting column: ", err.Error(), "\n")
-			num_errors.Add("os-error", 1)
-			return paste, err
-		}
-	} else {
-		paste.Title = string(col.Column.Value)
+	if te != nil {
+		log.Println("Request to database backend timed out")
+		num_errors.Add("timeout", 1)
+		return nil, errors.New("Timed out")
 	}
 
-	path.Column = []byte("owner")
-
-	col, ire, nfe, ue, te, err = conn.client.Get([]byte(shortid),
-		path, cassandra.ConsistencyLevel_ONE)
-	if col == nil {
-		if ire != nil {
-			log.Println("Invalid request: ", ire.Why)
-			num_errors.Add("invalid-request", 1)
-			return paste, errors.New(ire.Why)
-		}
-
-		if ue != nil {
-			log.Println("Unavailable")
-			num_errors.Add("unavailable", 1)
-			return paste, errors.New("Unavailable")
-		}
-
-		if te != nil {
-			log.Println("Request to database backend timed out")
-			num_errors.Add("timeout", 1)
-			return paste, errors.New("Timed out")
-		}
-
-		if err != nil {
-			log.Print("Error getting column: ", err.Error(), "\n")
-			num_errors.Add("os-error", 1)
-			return paste, err
-		}
-	} else {
-		paste.User = string(col.Column.Value)
+	if err != nil {
+		log.Print("Error getting column: ", err.Error(), "\n")
+		num_errors.Add("os-error", 1)
+		return nil, err
 	}
 
+	if len(cols) == 0 {
+		return nil, nil
+	}
+
+	paste = new(Paste)
+	for _, colsupercol := range cols {
+		var col *cassandra.Column
+
+		if !colsupercol.IsSetColumn() {
+			continue
+		}
+
+		col = colsupercol.Column
+		if string(col.Name) == "data" {
+			paste.Data = string(col.Value)
+		} else if string(col.Name) == "syntax" {
+			paste.Syntax = string(col.Value)
+		} else if string(col.Name) == "title" {
+			paste.Title = string(col.Value)
+		} else if string(col.Name) == "owner" {
+			paste.User = string(col.Value)
+		}
+		paste.Time = time.Unix(col.Timestamp, 0)
+	}
+
+	if len(paste.Data) <= 0 {
+		return nil, nil
+	}
 	paste.Id = shortid
 
 	num_found.Add(1)
