@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xhtml PUBLIC "-//W3C//DTD xhtml 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title>Add short link</title>
+  <meta name="description" content="A web site for pasting new things."/>
+  <meta name="author" content="pasten.go" />
+  <meta name="robots" content="noindex"/>
+ </head>
+ <body>
+  <h1>Paste a new thing</h1>
+  <form action="/" method="POST">
+   <label for="title">Title:</label>
+   <input type="text" id="title" name="title" size="64" maxlength="8192" value="{{.Title}}"/>
+   <br/>
+   <label for="paste">Content:</label>
+   <textarea id="paste" name="paste" cols="80" rows="8">{{.Data}}</textarea>
+   <br/>
+   <input type="submit" name="btnS" value="Shorten!"/>
+  </form>
+ </body>
+</html>
