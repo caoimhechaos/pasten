@@ -1,0 +1,17 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Add a way to expire pastes
+desc: Pastes could expire easily by setting a TTL on the Cassandra column.
+type: :feature
+component: pasten
+release: 
+reporter: Caoimhe Chaos <caoimhechaos@protonmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2013-12-20 08:53:26.533729 Z
+references: []
+
+id: 31cc4b7412cef545b33fc0b7eed8cd1ee7c82cc3
+log_events: 
+- - 2013-12-20 08:53:28.397070 Z
+  - Caoimhe Chaos <caoimhechaos@protonmail.com>
+  - created
