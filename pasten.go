@@ -105,7 +105,7 @@ func Pasten(w http.ResponseWriter, req *http.Request) {
 			log.Print("Error executing display template: ", err)
 		}
 	} else {
-		var paste Paste
+		var paste *Paste
 		paste, err = store.LookupPaste(pasteid)
 		if err != nil {
 			err = error_templ.Execute(w, err.Error())
@@ -115,7 +115,7 @@ func Pasten(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if paste.Data == "" {
+		if paste == nil {
 			w.WriteHeader(http.StatusNotFound)
 			err = fourohfour_templ.Execute(w, pasteid)
 			if err != nil {
