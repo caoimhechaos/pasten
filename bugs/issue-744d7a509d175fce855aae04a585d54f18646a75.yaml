@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Web design
+desc: The web design is currently terrible. It needs to be improved.
+type: :feature
+component: pasten
+release: 
+reporter: Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
+status: :unstarted
+disposition: 
+creation_time: 2013-12-20 08:39:39.624365 Z
+references: []
+
+id: 744d7a509d175fce855aae04a585d54f18646a75
+log_events: 
+- - 2013-12-20 08:39:40.876964 Z
+  - Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
+  - created
+  - ""

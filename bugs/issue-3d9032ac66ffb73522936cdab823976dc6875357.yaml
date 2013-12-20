@@ -1,0 +1,21 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Create README.md and manpage
+desc: |-
+  There's currently no documentation for pasten except for
+  source code comments. Surely people would like to know how
+  to deploy and use it.
+type: :feature
+component: pasten
+release: "0.9"
+reporter: Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
+status: :unstarted
+disposition: 
+creation_time: 2013-12-20 08:40:52.385860 Z
+references: []
+
+id: 3d9032ac66ffb73522936cdab823976dc6875357
+log_events: 
+- - 2013-12-20 08:40:53.702014 Z
+  - Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
+  - created
+  - ""
