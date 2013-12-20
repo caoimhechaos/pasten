@@ -99,11 +99,16 @@ func NewCassandraStore(servaddr, keyspace, corpus string) (*CassandraStore) {
  */
 func (conn *CassandraStore) AddPaste(paste *Paste, user string) (
 	string, error) {
-	var col cassandra.Column
-	var cp cassandra.ColumnParent
+	var mmap map[string]map[string][]*cassandra.Mutation
+	var mutations []*cassandra.Mutation
+	var mutation *cassandra.Mutation
+	var col *cassandra.Column
 	var ts int64
 	var rmd hash.Hash = sha256.New()
 	var digest, pasteid string
+	var ire *cassandra.InvalidRequestException
+	var ue *cassandra.UnavailableException
+	var te *cassandra.TimedOutException
 	var err error
 
 	paste.Time = time.Now()
@@ -117,45 +122,67 @@ func (conn *CassandraStore) AddPaste(paste *Paste, user string) (
 	digest = base64.URLEncoding.EncodeToString(rmd.Sum(nil))
 	pasteid = digest[0:7]
 
-	cp.ColumnFamily = conn.corpus
+	col = cassandra.NewColumn()
 	col.Name = []byte("data")
 	col.Value = []byte(paste.Data)
 	col.Timestamp = ts
+	mutation = cassandra.NewMutation()
+	mutation.ColumnOrSupercolumn = cassandra.NewColumnOrSuperColumn()
+	mutation.ColumnOrSupercolumn.Column = col
+	mutations = append(mutations, mutation)
 
-	// TODO(tonnerre): Use a mutation pool and locking here!
-
-	ire, ue, te, err := conn.client.Insert([]byte(pasteid), &cp, &col,
-		cassandra.ConsistencyLevel_ONE)
-	if ire != nil {
-		log.Println("Invalid request: ", ire.Why)
-		num_errors.Add("invalid-request", 1)
-		err = errors.New(ire.String())
-		return "", err
-	}
-	if ue != nil {
-		log.Println("Unavailable")
-		num_errors.Add("unavailable", 1)
-		err = errors.New(ue.String())
-		return "", err
-	}
-	if te != nil {
-		log.Println("Request to database backend timed out")
-		num_errors.Add("timeout", 1)
-		err = errors.New(te.String())
-		return "", err
-	}
-	if err != nil {
-		log.Println("Generic error: ", err)
-		num_errors.Add("os-error", 1)
-		err = errors.New(err.Error())
-		return "", err
-	}
-
+	col = cassandra.NewColumn()
 	col.Name = []byte("owner")
 	col.Value = []byte(user)
 	col.Timestamp = ts
+	mutation = cassandra.NewMutation()
+	mutation.ColumnOrSupercolumn = cassandra.NewColumnOrSuperColumn()
+	mutation.ColumnOrSupercolumn.Column = col
+	mutations = append(mutations, mutation)
 
-	ire, ue, te, err = conn.client.Insert([]byte(pasteid), &cp, &col,
+	if len(paste.Syntax) > 0 {
+		col = cassandra.NewColumn()
+		col.Name = []byte("syntax")
+		col.Value = []byte(paste.Syntax)
+		col.Timestamp = ts
+		mutation = cassandra.NewMutation()
+		mutation.ColumnOrSupercolumn = cassandra.NewColumnOrSuperColumn()
+		mutation.ColumnOrSupercolumn.Column = col
+	} else {
+		// Create a deletion for the syntax column just in case.
+		mutation = cassandra.NewMutation()
+		mutation.Deletion = cassandra.NewDeletion()
+		mutation.Deletion.Timestamp = ts
+		mutation.Deletion.Predicate = cassandra.NewSlicePredicate()
+		mutation.Deletion.Predicate.ColumnNames = [][]byte{
+			[]byte("syntax")}
+	}
+	mutations = append(mutations, mutation)
+
+	if len(paste.Title) > 0 {
+		col = cassandra.NewColumn()
+		col.Name = []byte("title")
+		col.Value = []byte(paste.Title)
+		col.Timestamp = ts
+		mutation = cassandra.NewMutation()
+		mutation.ColumnOrSupercolumn = cassandra.NewColumnOrSuperColumn()
+		mutation.ColumnOrSupercolumn.Column = col
+	} else {
+		// Create a deletion for the syntax column just in case.
+		mutation = cassandra.NewMutation()
+		mutation.Deletion = cassandra.NewDeletion()
+		mutation.Deletion.Timestamp = ts
+		mutation.Deletion.Predicate = cassandra.NewSlicePredicate()
+		mutation.Deletion.Predicate.ColumnNames = [][]byte{
+			[]byte("title")}
+	}
+	mutations = append(mutations, mutation)
+
+	mmap = make(map[string]map[string][]*cassandra.Mutation)
+	mmap[pasteid] = make(map[string][]*cassandra.Mutation)
+	mmap[pasteid][conn.corpus] = mutations
+
+	ire, ue, te, err = conn.client.BatchMutate(mmap,
 		cassandra.ConsistencyLevel_ONE)
 	if ire != nil {
 		log.Println("Invalid request: ", ire.Why)
@@ -180,72 +207,6 @@ func (conn *CassandraStore) AddPaste(paste *Paste, user string) (
 		num_errors.Add("os-error", 1)
 		err = errors.New(err.Error())
 		return "", err
-	}
-
-	if len(paste.Syntax) > 0 {
-		col.Name = []byte("syntax")
-		col.Value = []byte(paste.Syntax)
-		col.Timestamp = ts
-
-		ire, ue, te, err = conn.client.Insert([]byte(pasteid), &cp, &col,
-			cassandra.ConsistencyLevel_ONE)
-		if ire != nil {
-			log.Println("Invalid request: ", ire.Why)
-			num_errors.Add("invalid-request", 1)
-			err = errors.New(ire.String())
-			return "", err
-		}
-		if ue != nil {
-			log.Println("Unavailable")
-			num_errors.Add("unavailable", 1)
-			err = errors.New(ue.String())
-			return "", err
-		}
-		if te != nil {
-			log.Println("Request to database backend timed out")
-			num_errors.Add("timeout", 1)
-			err = errors.New(te.String())
-			return "", err
-		}
-		if err != nil {
-			log.Println("Generic error: ", err)
-			num_errors.Add("os-error", 1)
-			err = errors.New(err.Error())
-			return "", err
-		}
-	}
-
-	if len(paste.Title) > 0 {
-		col.Name = []byte("title")
-		col.Value = []byte(paste.Title)
-		col.Timestamp = ts
-
-		ire, ue, te, err = conn.client.Insert([]byte(pasteid), &cp, &col,
-			cassandra.ConsistencyLevel_ONE)
-		if ire != nil {
-			log.Println("Invalid request: ", ire.Why)
-			num_errors.Add("invalid-request", 1)
-			err = errors.New(ire.String())
-			return "", err
-		}
-		if ue != nil {
-			log.Println("Unavailable")
-			num_errors.Add("unavailable", 1)
-			err = errors.New(ue.String())
-			return "", err
-		}
-		if te != nil {
-			log.Println("Request to database backend timed out")
-			num_errors.Add("timeout", 1)
-			err = errors.New(te.String())
-			return "", err
-		}
-		if err != nil {
-			log.Println("Generic error: ", err)
-			num_errors.Add("os-error", 1)
-			err = errors.New(err.Error())
-			return "", err
-		}
 	}
 
 	return pasteid, nil

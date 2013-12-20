@@ -1,2 +1,3 @@
 == 0.9 / unreleased
 * Fetch the entire row at a time in LookupPaste
+* Use mutation pools in AddPaste
