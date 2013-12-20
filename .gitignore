@@ -20,3 +20,8 @@ _cgo_export.*
 _testmain.go
 
 *.exe
+.ditz-config
+pasten
+pasten.key
+pasten.pem
+cacert.pem

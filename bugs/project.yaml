@@ -1,0 +1,16 @@
+--- !ditz.rubyforge.org,2008-03-06/project 
+name: pasten
+version: "0.5"
+components: 
+- !ditz.rubyforge.org,2008-03-06/component 
+  name: pasten
+releases: 
+- !ditz.rubyforge.org,2008-03-06/release 
+  name: "0.9"
+  status: :unreleased
+  release_time: 
+  log_events: 
+  - - 2013-12-20 08:34:46.006068 Z
+    - Caoimhe Chaos <caoimhechaos@protonmail.com>
+    - created
+    - First feature-complete but terribly web-designed version.
