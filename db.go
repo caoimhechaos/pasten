@@ -286,6 +286,7 @@ func (conn *CassandraStore) LookupPaste(shortid string) (
 	}
 
 	if len(paste.Data) <= 0 {
+		num_notfound.Add(1)
 		return nil, nil
 	}
 	paste.Id = shortid
