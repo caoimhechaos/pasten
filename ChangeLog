@@ -1,4 +1,4 @@
-== 0.9 / unreleased
+== 0.9 / 2013-12-22
 * Fetch the entire row at a time in LookupPaste
 * Use mutation pools in AddPaste
 * Create README.md and manpage
