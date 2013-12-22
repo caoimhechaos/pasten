@@ -7,10 +7,14 @@ components:
 releases: 
 - !ditz.rubyforge.org,2008-03-06/release 
   name: "0.9"
-  status: :unreleased
-  release_time: 
+  status: :released
+  release_time: 2013-12-22 01:26:56.462826 Z
   log_events: 
   - - 2013-12-20 08:34:46.006068 Z
     - Caoimhe Chaos <caoimhechaos@protonmail.com>
     - created
     - First feature-complete but terribly web-designed version.
+  - - 2013-12-22 01:26:56.462836 Z
+    - Caoimhe Chaos <caoimhechaos@protonmail.com>
+    - released
+    - With all issues resolved, we're ready for the first release.
