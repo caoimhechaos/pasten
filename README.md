@@ -115,7 +115,7 @@ BUGS
 
 Bugs for this project are tracked using ditz in the source code tree itself.
 The current state of bug squashing can be viewed at
-http://pasten.ancient-solutions.com/bugtracker/
+<http://pasten.ancient-solutions.com/bugtracker/>
 
 To report bugs, please send a pull request with the ditz bug added to the
 project
