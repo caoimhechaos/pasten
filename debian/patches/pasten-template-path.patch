@@ -1,0 +1,18 @@
+Description: Make pasten template path Debian compatible.
+ Modify the default template path for pasten to point to the default
+ install location under Debian.
+Author: Caoimhe Chaos <caoimhechaos@protonmail.com>
+Forwarded: not-needed
+Last-Update: 2013-11-27
+
+--- pasten-0.9.orig/pasten.go
++++ pasten-0.9/pasten.go
+@@ -157,7 +157,7 @@ func main() {
+ 		"Path to the X.509 certificate")
+ 	flag.StringVar(&priv, "key", "pasten.key",
+ 		"Path to the X.509 private key file")
+-	flag.StringVar(&templatedir, "template-dir", "/var/www/templates",
++	flag.StringVar(&templatedir, "template-dir", "/usr/share/pasten/templates",
+ 		"Path to the HTML templates for the web interface")
+ 	flag.StringVar(&authserver, "auth-server",
+ 		"login.ancient-solutions.com",

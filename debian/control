@@ -1,0 +1,19 @@
+Source: pasten
+Section: httpd
+Priority: extra
+Maintainer: Caoimhe Chaos <caoimhechaos@protonmail.com>
+Build-Depends: debhelper (>= 9), golang-go, dh-golang,
+ golang-cassandra-dev (>= 19.37.0.2), golang-ancientauth-dev,
+ golang-doozer-exportedservice-dev (>= 0.3~rc1)
+Standards-Version: 3.9.4
+Homepage: http://pasten.ancient-solutions.com/
+Vcs-Git: http://git.ancient-solutions.com/golang/pasten.git
+Vcs-Browser: http://git.ancient-solutions.com/cgi-bin/gitweb.cgi?p=golang/pasten.git;a=summary
+
+Package: pasten
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, run-as-daemon
+Description: HTTP server implementing a pastebin web application
+ In order to paste content, users must be authenticated using AncientAuth.
+ Currently, anybody on the internet can view pastes, there is no access
+ control mechanism yet.

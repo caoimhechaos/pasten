@@ -1,0 +1,24 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# DH_GOPKG is the upstream path which you would normally “go get”.
+# Using it allows us to build applications without patching locations.
+export DH_GOPKG := ancient-solutions.com/apps/pasten
+
+override_dh_auto_install:
+	install -o root -g 0 -m 0555 -d \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/display.tmpl \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/paste.tmpl \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/error.tmpl \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/notfound.tmpl \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates
+	dh_auto_install -O--buildsystem=golang
+
+%:
+	dh $@ --buildsystem=golang --with=golang

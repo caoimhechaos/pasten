@@ -1,0 +1,4 @@
+#
+# PASTEN_FLAGS specifies the flags to pass to the pasten binary.
+#
+PASTEN_FLAGS=""
