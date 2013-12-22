@@ -1,0 +1,169 @@
+.\" Hey, EMACS: -*- nroff -*-
+.TH PASTEN "1" "Nov 2013" "pasten"
+.SH NAME
+pasten \- Cassandra backed pastebin web application
+.SH SYNOPSIS
+.TP
+.B pasten
+\fI[\-\-auth\-server=host]\fR
+\fI[\-\-bind=address]\fR
+\fI[\-\-cacert=path]\fR
+\fI[\-\-cassandra\-server=host]\fR
+\fI[\-\-cert=path]\fR
+\fI[\-\-corpus=name]\fR
+\fI[\-\-doozer\-boot\-uri=URI]\fR
+\fI[\-\-doozer\-uri=URI]\fR
+\fI[\-\-exported\-name=name]\fR
+\fI[\-\-help]\fR
+\fI[\-\-key=path]\fR
+\fI[\-\-keyspace=name]\fR
+\fI[\-\-template\-dir=path]\fR
+.SH DESCRIPTION
+.PP
+.B pasten
+is a standalone web server implementing a pastebin with a
+.I Cassandra
+database backend.
+.SH OPTIONS
+.TP
+\fB\-\-auth\-server=host\fR
+Use the
+.IR ancient\-login\-service (1)
+service running on the given
+.IR host .
+The host may contain a port specification as required. As a protocol,
+.I https
+will always be used.
+.TP
+\fB\-\-bind=address\fR
+Bind the server to the given address.
+In
+.IR doozer (1)
+exported service mode, this should point to the externally reachable
+host name or IP address of the host, otherwise this should be a host:port
+pair.
+.TP
+\fB\-\-cacert=path\fR
+Use the certificate file at the given path to verify peer certificates
+(e.g. on the login token).
+.TP
+\fB\-\-cassandra\-server=host\fR
+Use the Cassandra server at the given host (or host:port) for storage.
+The server should have a keyspace with the name from
+.I \-\-corpus
+and be configured as described in the
+.I cassandra-schema
+file.
+.TP
+\fB\-\-cert=path\fR
+.TP
+\fB\-\-key=path\fR 
+Use the certificate and key stored at the specified paths for signing
+and encryption operations (such as the login cookie).
+.TP
+\fB\-\-corpus=name\fR
+Use the Cassandra keyspace with the given name for storing pasted content.
+.TP
+\fB\-\-doozer\-boot\-uri=URI\fR
+.TP
+\fB\-\-doozer\-uri=URI\fR
+Specifies how to connect to the
+.IR doozer (1)
+lock service, if used.
+.IR doozer (1)
+will be used only for the exported anonymous port functionality.
+In order to use Doozer, you must specify a Doozer URI. 
+The URI can contain an arbitrary number of address parts concatenated
+by an ampersand character (&).
+An URI always starts with the prefix
+.IR doozer:? .
+Valid options include:
+.RS
+.IP ca
+specifies the "cluster address", which could be an IP address and port
+combination or a host name with a port appended to it.
+.IP cn
+specifies a cluster name which will be looked up from the lock servers
+specified in the environment variable
+.B DOOZER_BOOT_URI
+(which also contains a doozer URI).
+.IP sk
+can specify a shared key which is used to authenticate to the lock
+service.
+.RE
+.RS
+An example URI would look like this:
+.TP
+doozer:?ca=doozer1.example.com&ca=doozer2.example.com&sk=letmein
+.RE
+.TP
+\fB\-\-exported\-name=name\fR
+Export the host and port pair which
+.B pasten
+is bound to to a
+.IR doozer (1)
+lock service under the given service name.
+.TP
+\fB\-\-help\fR
+Display the usage instructions for
+.BR pasten .
+.TP
+\fB\-\-keyspace=name\fR
+Set the keyspace to read from to
+.IR name .
+.TP
+\fB\-\-template\-dir=path\fR
+Indicate the path where the HTML template files for
+.B pasten
+can be found. Must point to a directory which contains the files
+.IR display.tmpl ,
+.IR error.tmpl ,
+.I notfound.tmpl
+and
+.IR paste.tmpl .
+.SH ENVIRONMENT
+The following environment variables are honored:
+.IP DOOZER_URI
+The doozer cluster to bind to; overridden by
+.IR --doozer-uri .
+.IP DOOZER_BOOT_URI
+The DzNS to lookup address in; overridden by
+.IR --doozer-boot-uri .
+.SH AUTHOR
+.B pasten
+was written by Caoimhe Chaos.
+.SH "REPORTING BUGS"
+Please file any bug in the ditz issue tracker contained in the
+.B pasten
+repository at
+.I http://git.ancient-solutions.com/golang/pasten.git
+.SH COPYRIGHT
+.PP
+Copyright \(co 2013 Caoimhe Chaos
+.PP
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+.PP
+.IP \[bu] 2
+Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+.IP \[bu] 2
+Redistributions in binary form must reproduce the above copyright notice, this
+list of conditions and the following disclaimer in the documentation and/or
+other materials provided with the distribution.
+.IP \[bu] 2
+Neither the name of Ancient Solutions nor the name of its contributors may be
+used to endorse or promote products derived from this software without specific
+prior written permission.
+.PP
+THIS SOFTWARE IS PROVIDED BY ANCIENT SOLUTIONS AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
