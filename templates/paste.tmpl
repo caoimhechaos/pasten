@@ -1,22 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xhtml PUBLIC "-//W3C//DTD xhtml 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
- <head>
-  <title>Add short link</title>
-  <meta name="description" content="A web site for pasting new things."/>
-  <meta name="author" content="pasten.go" />
-  <meta name="robots" content="noindex"/>
- </head>
- <body>
-  <h1>Paste a new thing</h1>
-  <form action="/" method="POST">
-   <label for="title">Title:</label>
-   <input type="text" id="title" name="title" size="64" maxlength="8192" value="{{.Title}}"/>
-   <br/>
-   <label for="paste">Content:</label>
-   <textarea id="paste" name="paste" cols="80" rows="8">{{.Data}}</textarea>
-   <br/>
-   <input type="submit" name="btnS" value="Shorten!"/>
-  </form>
- </body>
+<!DOCTYPE html PUBLIC>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Add short link</title>
+    <meta name="description" content="A web site for pasting new things."/>
+    <meta name="author" content="pasten.go" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" />
+  </head>
+  <body>
+    <div class="page-header">
+      <h1>Paste a new thing</h1>
+    </div>
+    <form action="/" method="POST" class="form-horizontal">
+      <input type="hidden" name="csrftoken" value="{{.CsrfToken}}" />
+      <div class="control-group">
+        <label class="control-label" for="title">Title:</label>
+        <div class="controls">
+          <input type="text" id="title" name="title" size="64" maxlength="8192" value="{{.Title}}"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="paste">Content:</label>
+        <div class="controls">
+          <textarea id="paste" name="paste" cols="80" rows="8">{{.Data}}</textarea>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <input type="submit" name="btnS" class="btn btn-primary" value="Shorten!"/>
+        </div>
+      </div>
+    </form>
+  </body>
 </html>

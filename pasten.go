@@ -196,6 +196,8 @@ func main() {
 	}
 
 	http.Handle("/", http.HandlerFunc(Pasten))
+	http.Handle("/css/", http.FileServer(http.Dir(templatedir)))
+	http.Handle("/js/", http.FileServer(http.Dir(templatedir)))
 
 	if len(servicename) > 0 {
 		exporter, err = exportedservice.NewExporter(doozer_uri,
