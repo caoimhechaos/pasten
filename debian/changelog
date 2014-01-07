@@ -1,3 +1,10 @@
+pasten (0.10-1) unstable; urgency=low
+
+  * Web design
+  * CSRF protection
+
+ -- Caoimhe Chaos <caoimhechaos@protonmail.com>  Tue, 07 Jan 2014 15:53:25 +0100
+
 pasten (0.9-1) unstable; urgency=low
 
   * Initial release
