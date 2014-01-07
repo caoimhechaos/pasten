@@ -48,12 +48,14 @@ type CassandraStore struct {
 }
 
 type Paste struct {
-	Id     string
-	Title  string
-	Syntax string
-	Data   string
-	User   string
-	Time   time.Time
+	Id         string
+	Title      string
+	Syntax     string
+	Data       string
+	User       string
+	CsrfToken  string
+	CsrfFailed bool
+	Time       time.Time
 }
 
 var num_notfound *expvar.Int = expvar.NewInt("cassandra-not-found")

@@ -36,9 +36,11 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"text/template"
+	"time"
 
 	"ancient-solutions.com/ancientauth"
 	"ancient-solutions.com/doozer/exportedservice"
@@ -64,6 +66,9 @@ func Pasten(w http.ResponseWriter, req *http.Request) {
 
 	if pasteid == "" {
 		/* People need to be logged in in order to add URLs. */
+		var dest *url.URL = &url.URL{
+			Path: "/",
+		}
 		var user string = authenticator.GetAuthenticatedUser(req)
 		var paste Paste
 
@@ -73,32 +78,51 @@ func Pasten(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		paste.User = user
-		paste.Data = req.FormValue("paste")
-		paste.Syntax = req.FormValue("syntax")
-		paste.Title = req.FormValue("title")
-
 		err = req.ParseForm()
 		if err != nil {
 			error_templ.Execute(w, err.Error())
 			return
 		}
 
+		paste.User = user
+		paste.Data = req.FormValue("paste")
+		paste.Syntax = req.FormValue("syntax")
+		paste.Title = req.FormValue("title")
+		paste.CsrfToken, err = authenticator.GenCSRFToken(
+			req, dest, 20*time.Minute)
+		if err != nil {
+			error_templ.Execute(w, err.Error())
+			return
+		}
+
 		if paste.Data != "" {
-			paste.Id, err = store.AddPaste(&paste, user)
-			if err != nil {
-				err = error_templ.Execute(w, err.Error())
-				if err != nil {
-					log.Print("Error executing error template: ", err)
-				}
+			var verified bool
+
+			verified, err = authenticator.VerifyCSRFToken(req,
+				req.FormValue("csrftoken"), false)
+			if err != nil && err != ancientauth.CSRFToken_WeakProtectionError {
+				error_templ.Execute(w, err.Error())
 				return
 			}
-			num_edits.Add(1)
-			err = display_templ.Execute(w, paste)
-			if err != nil {
-				log.Print("Error executing display template: ", err)
+
+			if verified {
+				paste.Id, err = store.AddPaste(&paste, user)
+				if err != nil {
+					err = error_templ.Execute(w, err.Error())
+					if err != nil {
+						log.Print("Error executing error template: ", err)
+					}
+					return
+				}
+				num_edits.Add(1)
+				err = display_templ.Execute(w, paste)
+				if err != nil {
+					log.Print("Error executing display template: ", err)
+				}
+				return
+			} else {
+				paste.CsrfFailed = true
 			}
-			return
 		}
 
 		err = paste_templ.Execute(w, paste)
