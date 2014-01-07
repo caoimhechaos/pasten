@@ -1,17 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xhtml PUBLIC "-//W3C//DTD xhtml 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
- <head>
-  <title>Not found &#x2014; {{.|html}}</title>
-  <meta name="description" content="A web site stating that {@|html} could not be found."/>
-  <meta name="author" content="pasten.go" />
-  <meta name="robots" content="noindex"/>
- </head>
- <body>
-  <h1>Not found</h1>
-  <p>
-   The paste you were looking for &#x2014; <i>{{.|html}}</i> &#x2014; could not be found.
-   Maybe <a href="http://www.google.com/search?q={{.|urlquery}}">try searching for {{.|html}} on Google</a>?
-  </p>
- </body>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Not found &mdash; {{.|html}}</title>
+		<meta name="description" content="A web site stating that {@|html} could not be found."/>
+		<meta name="author" content="pasten.go" />
+		<meta name="robots" content="noindex" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="/css/bootstrap-responsive.min.css" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="alert alert-danger">
+				<strong>Not found</strong>
+				The paste you were looking for &mdash; <i>{{.|html}}</i>
+				&mdash; could not be found.
+				Maybe
+				<a href="http://www.google.com/search?q={{.|urlquery}}">try
+					searching for {{.|html}} on Google</a>?
+			</div>
+		</div>
+	</body>
 </html>
