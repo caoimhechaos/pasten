@@ -8,11 +8,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/bootstrap-responsive.min.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
   </head>
   <body>
     <div class="page-header">
       <h1>Paste a new thing</h1>
     </div>
+{{if .CsrfFailed}}
+    <div id="alert" class="alert alert-block">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4>Is somebody trying to trick you?</h4>
+      Either you took too long to type in this paste, or somebody is trying
+      to trick you into pasting something here, e.g. via a short link.
+      Please verify that the data below is what you're trying to paste, then
+      click &laquo;Shorten!&raquo;
+    </div>
+{{end}}
     <form action="/" method="POST" class="form-horizontal">
       <input type="hidden" name="csrftoken" value="{{.CsrfToken}}" />
       <div class="control-group">
