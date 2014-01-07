@@ -43,17 +43,19 @@ import (
 )
 
 type CassandraStore struct {
-	client           *cassandra.RetryCassandraClient
-	corpus           string
+	client *cassandra.RetryCassandraClient
+	corpus string
 }
 
 type Paste struct {
-	Id     string
-	Title  string
-	Syntax string
-	Data   string
-	User   string
-	Time   time.Time
+	Id         string
+	Title      string
+	Syntax     string
+	Data       string
+	User       string
+	CsrfToken  string
+	CsrfFailed bool
+	Time       time.Time
 }
 
 var num_notfound *expvar.Int = expvar.NewInt("cassandra-not-found")
@@ -65,12 +67,12 @@ var num_found *expvar.Int = expvar.NewInt("cassandra-found")
  * Returns a new CassandraStore object which can be used to look up
  * and store pastes.
  */
-func NewCassandraStore(servaddr, keyspace, corpus string) (*CassandraStore) {
+func NewCassandraStore(servaddr, keyspace, corpus string) *CassandraStore {
 	var err error
 	var client *cassandra.RetryCassandraClient
 
 	client, err = cassandra.NewRetryCassandraClientTimeout(servaddr,
-		10 * time.Second)
+		10*time.Second)
 	if err != nil {
 		log.Print("Error opening connection to ", servaddr, ": ", err)
 		return nil
