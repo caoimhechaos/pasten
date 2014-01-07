@@ -1,0 +1,3 @@
+# The Go compiler can't produce stripped, hardened binaries yet.
+pasten: hardening-no-relro usr/bin/pasten
+pasten: hardening-no-fortify-functions usr/bin/pasten

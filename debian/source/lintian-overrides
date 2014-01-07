@@ -1,0 +1,2 @@
+# GitHub doesn't allow signed releases.
+pasten source: debian-watch-may-check-gpg-signature
