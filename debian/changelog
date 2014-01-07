@@ -1,4 +1,4 @@
-pasten (0.10-1) unstable; urgency=low
+pasten (0.10-1~wheezy1) stable; urgency=low
 
   * Web design
   * CSRF protection
