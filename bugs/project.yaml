@@ -18,3 +18,16 @@ releases:
     - Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
     - released
     - With all issues resolved, we're ready for the first release.
+- !ditz.rubyforge.org,2008-03-06/release 
+  name: "0.10"
+  status: :released
+  release_time: 2014-01-07 14:47:42.193314 Z
+  log_events: 
+  - - 2014-01-07 13:51:22.681926 Z
+    - Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
+    - created
+    - A slightly styled variant of the 0.9 release.
+  - - 2014-01-07 14:47:42.193327 Z
+    - Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
+    - released
+    - Release version 0.10 with the few changes it has.

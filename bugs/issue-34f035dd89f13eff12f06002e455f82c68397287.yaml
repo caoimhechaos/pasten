@@ -7,8 +7,8 @@ type: :bugfix
 component: pasten
 release: "0.10"
 reporter: Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
-status: :unstarted
-disposition: 
+status: :closed
+disposition: :fixed
 creation_time: 2014-01-07 13:58:23.675471 Z
 references: []
 
@@ -18,3 +18,7 @@ log_events:
   - Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
   - created
   - ""
+- - 2014-01-07 14:43:02.849482 Z
+  - Tonnerre LOMBARD <tonnerre@ancient-solutions.com>
+  - closed with disposition fixed
+  - Cross-Site request forgery has been avoided using AncientAuth.
