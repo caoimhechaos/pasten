@@ -18,6 +18,26 @@ override_dh_auto_install:
 		$(CURDIR)/debian/pasten/usr/share/pasten/templates
 	install -o root -g 0 -m 0444 $(CURDIR)/templates/notfound.tmpl \
 		$(CURDIR)/debian/pasten/usr/share/pasten/templates
+	
+	install -o root -g 0 -m 0555 -d \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/js
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/js/jquery.min.js \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/js
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/js/bootstrap.min.js \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/js
+	
+	install -o root -g 0 -m 0555 -d \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/css
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/css/bootstrap.min.css \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/css
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/css/bootstrap-responsive.min.css \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/css
+	
+	install -o root -g 0 -m 0555 -d \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/img
+	install -o root -g 0 -m 0444 $(CURDIR)/templates/img/glyphicons-halflings.png \
+		$(CURDIR)/debian/pasten/usr/share/pasten/templates/img
+	
 	dh_auto_install -O--buildsystem=golang
 
 %:
