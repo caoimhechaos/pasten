@@ -1,3 +1,9 @@
+pasten (0.10-1~wheezy2) stable; urgency=low
+
+  * Stop trying to produce symlinks.
+
+ -- Caoimhe Chaos <caoimhechaos@protonmail.com>  Tue, 07 Jan 2014 20:36:40 +0100
+
 pasten (0.10-1~wheezy1) stable; urgency=low
 
   * Web design
