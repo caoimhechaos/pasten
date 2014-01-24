@@ -1,3 +1,10 @@
+pasten (0.10a-1) unstable; urgency=low
+
+  * Fix for the display of preformatted paste text.
+  * Make the input fields a bit wider.
+
+ -- Caoimhe Chaos <caoimhechaos@protonmail.com>  Fri, 24 Jan 2014 15:33:47 +0100
+
 pasten (0.10-1) unstable; urgency=low
 
   * Web design
