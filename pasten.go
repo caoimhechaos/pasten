@@ -34,12 +34,12 @@ package main
 import (
 	"expvar"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
-	"text/template"
 	"time"
 
 	"ancient-solutions.com/ancientauth"
