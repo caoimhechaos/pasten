@@ -36,12 +36,12 @@ import (
 	"ancient-solutions.com/doozer/exportedservice"
 	"expvar"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
-	"text/template"
 	"time"
 )
 
@@ -84,11 +84,11 @@ func Pasten(w http.ResponseWriter, req *http.Request) {
 		}
 
 		paste.User = user
-		paste.Data  = req.FormValue("paste")
+		paste.Data = req.FormValue("paste")
 		paste.Syntax = req.FormValue("syntax")
 		paste.Title = req.FormValue("title")
 		paste.CsrfToken, err = authenticator.GenCSRFToken(
-			req, dest, 20 * time.Minute)
+			req, dest, 20*time.Minute)
 		if err != nil {
 			error_templ.Execute(w, err.Error())
 			return
@@ -171,8 +171,8 @@ func main() {
 	flag.StringVar(&cassandra_server, "cassandra-server", "localhost:9160",
 		"The Cassandra database server to use")
 	flag.StringVar(&keyspace, "keyspace", "pasten",
-		"The Cassandra keyspace the links are stored in. " +
-		"The default should be fine.")
+		"The Cassandra keyspace the links are stored in. "+
+			"The default should be fine.")
 	flag.StringVar(&corpus, "corpus", "pastes",
 		"The column family containing the paste data for this service")
 	flag.StringVar(&ca, "cacert", "cacert.pem",
